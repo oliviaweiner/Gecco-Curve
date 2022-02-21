@@ -199,17 +199,16 @@ def drawshape3(hex):
                 (iter1bottom, 0, 3), (iter2left, 0, 0), (iter1left, -1, -2), (right, -3, -1), (iter1bottom, -1, -2), \
                 (upper, -1, -5), (iter1right, -1, -2), (iter2bottom, 0, 0)]
 
-    stringcurve = []
+    x_curve = []
+    y_curve = []
     for i, triple in enumerate(order_list):
-            stringcurve.append(generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT))
+            curve = generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT)
+            x_curve += curve[0]
+            y_curve += curve[1]
 
-    str1 = []
-    str2 = []
-    for i in range(len(stringcurve)):
-            str1 += stringcurve[i][0]
-            str2 += stringcurve[i][1]
-    
-    return (str1, str2)
+    return (x_curve, y_curve)
+
+
 
 #creating coordinates of a hexagon with side length 1 centred at (0, 0)
 HEXLEN = 1
