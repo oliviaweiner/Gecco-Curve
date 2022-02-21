@@ -2,6 +2,9 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
+xind = 0
+yind = 1
+
 #function that inputs 2 sets of coordinates and outputs the distance between them
 def distance(x_1, y_1, x_2, y_2):
     return ((x_1 - x_2)**2 + (y_1 - y_2)**2)**(1/2)
@@ -135,8 +138,6 @@ def drawshape2(hex):
 #n. of parts added up of curve, cut off at weight proportionate critical points of curve
 def curveportion(weights, curve, indicator):
     curvelen = len(curve[0])
-    xind = 0
-    yind = 1
     weight1 = weights[0]
     weight2 = weights[1]
     if indicator == 1:
@@ -150,14 +151,15 @@ def curveportion(weights, curve, indicator):
         y_curve = curve[yind][int(curvelen*weight1):] + curve[yind][:int(curvelen*weight2)]
     return (x_curve, y_curve)
 
+#inputs curve coordinates and amount it should be shifted in each direction and outputs shifted curve
+def generatecurve(curve, x_shift, y_shift):
+        newx = [x + x_shift for x in curve[xind]]
+        newy = [y + y_shift for y in curve[yind]]
+        return (newx, newy)
 
 #function that inputs coordinates of hexagon and outputs coordinates of third gecco iteration
 def drawshape3(hex):
     iter2 = drawshape2(hexagon)
-    LEN2 = len(iter2[0])
-
-    xind = 0
-    yind = 1
 
     #weights represent weighted positions where centre iter2 of gecco curve meets other copies
     weights = [(2/21 + i/3, 3/21 + i/3) for i in range(3)]
@@ -166,6 +168,7 @@ def drawshape3(hex):
     for word in centre_parts:
         globals()[word + 'x'] = centre_parts[word][xind]
         globals()[word + 'y'] = centre_parts[word][yind]
+        globals()[word] = centre_parts[word]
 
     #weights represent weighted positions where iter1 connectives gecco curve meet
     iter1weights = [(0 + i/3, 1/9 + i/3) for i in range(3)] 
@@ -174,67 +177,38 @@ def drawshape3(hex):
     for word in iter1_parts:
         globals()['iter1' + word + 'x'] = iter1_parts[word][xind]
         globals()['iter1' + word + 'y'] = iter1_parts[word][yind]
+        globals()['iter1' + word] = iter1_parts[word]
     
+    #weights represent weighted positions where iter2 connectives gecco curve meet
     iter2weights = [(((3 + i * 7) % 21)/21, ((9 + i * 7) % 21)/21) for i in range(3)]
     iter2 = centreshape
     iter2_parts = {'left': curveportion(iter2weights[0], iter2, 1), 'bottom': curveportion(iter2weights[1], iter2, 1), 'right': curveportion(iter2weights[2], iter2, -1)}
-
-
-
     for word in iter2_parts:
         globals()['iter2' + word + 'x'] = iter2_parts[word][xind]
         globals()['iter2' + word + 'y'] = iter2_parts[word][yind]
+        globals()['iter2' + word] = iter2_parts[word]
 
 
     YSHIFT = hex[1][1] - hex[0][1]
     XSHIFT = hex[2][0] - hex[4][0]
 
-    iter1curvey1 = [y - YSHIFT for y in iter1bottomy]
-    iter1curvex1 = [x + 2 * XSHIFT for x in iter1bottomx]
+    #This list specifies the shift index and curve type that each step in our third iteration gecco
+    #curve will be comprised of
+    order_list = [(iter2bottom, 0, 0), (iter1bottom, 2, -1), (upper, 2, -4), (iter1right, 2, -1), (left, 3, 1), \
+                (iter1left, 2, -1), (iter2right, 0, 0), (iter1right, 0, 3), (left, 1, 5), (iter1left, 0, 3), (right, -2, 4), \
+                (iter1bottom, 0, 3), (iter2left, 0, 0), (iter1left, -1, -2), (right, -3, -1), (iter1bottom, -1, -2), \
+                (upper, -1, -5), (iter1right, -1, -2), (iter2bottom, 0, 0)]
 
-    iter2curvey2 = [y - 4 * YSHIFT for y in uppery]
-    iter2curvex2 = [x + 2 * XSHIFT for x in upperx]
+    x_curve = []
+    y_curve = []
+    for i, triple in enumerate(order_list):
+            curve = generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT)
+            x_curve += curve[0]
+            y_curve += curve[1]
 
-    iter1curvey3 = [y - YSHIFT for y in iter1righty]
-    iter1curvex3 = [x + 2 * XSHIFT for x in iter1rightx]
+    return (x_curve, y_curve)
 
-    iter2curvey4 = [y + YSHIFT for y in lefty]
-    iter2curvex4 = [x + 3 * XSHIFT for x in leftx]
 
-    iter1curvey5 = [y - YSHIFT for y in iter1lefty]
-    iter1curvex5 = [x + 2 * XSHIFT for x in iter1leftx]
-
-    iter1curvey6 = [y + 3 * YSHIFT for y in iter1righty]
-    iter1curvex6 = [x + 0 * XSHIFT for x in iter1rightx]
-
-    iter2curvey7 = [y + 5 * YSHIFT for y in lefty]
-    iter2curvex7 = [x + 1 * XSHIFT for x in leftx]
-
-    iter1curvey8 = [y + 3 * YSHIFT for y in iter1lefty]
-    iter1curvex8 = [x + 0 * XSHIFT for x in iter1leftx]
-
-    iter2curvey9 = [y + 4 * YSHIFT for y in righty]
-    iter2curvex9 = [x - 2 * XSHIFT for x in rightx]
-
-    iter1curvey10 = [y + 3 * YSHIFT for y in iter1bottomy]
-    iter1curvex10 = [x + 0 * XSHIFT for x in iter1bottomx]
-
-    iter1curvey11 = [y - 2 * YSHIFT for y in iter1lefty]
-    iter1curvex11 = [x - 1 * XSHIFT for x in iter1leftx]
-
-    iter2curvey12 = [y - 1 * YSHIFT for y in righty]
-    iter2curvex12 = [x - 3 * XSHIFT for x in rightx]
-
-    iter1curvey13 = [y - 2 * YSHIFT for y in iter1bottomy]
-    iter1curvex13 = [x - 1 * XSHIFT for x in iter1bottomx]
-
-    iter2curvey14 = [y - 5 * YSHIFT for y in uppery]
-    iter2curvex14 = [x - 1 * XSHIFT for x in upperx]
-
-    iter1curvey15 = [y - 2 * YSHIFT for y in iter1righty]
-    iter1curvex15 = [x - 1 * XSHIFT for x in iter1rightx]
-
-    return (iter2bottomx + iter1curvex1 + iter2curvex2 + iter1curvex3 + iter2curvex4 + iter1curvex5 + iter2rightx + iter1curvex6 + iter2curvex7 + iter1curvex8 + iter2curvex9 + iter1curvex10 + iter2leftx + iter1curvex11 + iter2curvex12 + iter1curvex13 + iter2curvex14 + iter1curvex15 + iter2bottomx, iter2bottomy + iter1curvey1 + iter2curvey2 + iter1curvey3 + iter2curvey4 + iter1curvey5 + iter2righty + iter1curvey6 + iter2curvey7 + iter1curvey8 + iter2curvey9 + iter1curvey10 + iter2lefty + iter1curvey11 + iter2curvey12 + iter1curvey13 + iter2curvey14 + iter1curvey15 + iter2bottomy)
 
 #creating coordinates of a hexagon with side length 1 centred at (0, 0)
 HEXLEN = 1
