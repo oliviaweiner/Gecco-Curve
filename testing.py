@@ -53,14 +53,49 @@ class MyTest(unittest.TestCase):
         output = gecco_curve.addpoints([1, 2, 3, 4, 5, 6], [6, 5, 4, 3, 2, 1], 2, 4)
         self.assertEqual(output, ([3, 4, 5], [4, 3, 2]))
 
-    #test drawshape function
+    #test drawshape function by checking that curve is smooth by assessing gradient
     def test_drawshape(self):
         testhex = gecco_curve.hexagonCoords(1, 1, 1)
         output = gecco_curve.drawshape(testhex, 1)
-        
-        
-
+        prevgrad = 'NONE'
+        for i in range(len(output)-1):
+            grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
+            if prevgrad != 'NONE':
+                self.assertAlmostEqual(prevgrad, grad)
+            prevgrad = grad
     
+    #test drawshape2 function by checking that curve is smooth by assessing gradient
+    def test_drawshape2(self):
+        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        output = gecco_curve.drawshape2(testhex)
+        prevgrad = 'NONE'
+        for i in range(len(output)-1):
+            grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
+            if prevgrad != 'NONE':
+                self.assertAlmostEqual(prevgrad, grad)
+            prevgrad = grad
+        
+    #test curveportion function
+    def test_curveportion(self):
+        curve = gecco_curve.curveportion((1, 3), ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]), -1)
+        self.assertEqual(curve, ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]))
+
+    #test generatecurve function
+    def test_generatecurve(self):
+        curve = gecco_curve.generatecurve(([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]), -10, 5)
+        newcurve =  ([-9, -8, -7, -6, -5], [6, 7, 8, 9, 10])
+        self.assertEqual(curve, newcurve)
+    
+    #test drawshape3 function
+    def test_drawshape3(self):
+        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        output = gecco_curve.drawshape3(testhex)
+        prevgrad = 'NONE'
+        for i in range(len(output)-1):
+            grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
+            if prevgrad != 'NONE':
+                self.assertAlmostEqual(prevgrad, grad)
+            prevgrad = grad
 
 if __name__ == '__main__':
     unittest.main()

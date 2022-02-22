@@ -117,7 +117,7 @@ def drawshape(hexagon, r):
 
 #function that inputs coordinates of hexagon and outputs coordinates of second gecco iteration
 def drawshape2(hex):
-    RADIUS = distance(hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1])/2
+    RADIUS = distance(hex[0][0], hex[0][1], hex[1][0], hex[1][1])/2
     iter1 = drawshape(hex, RADIUS)
     LEN = len(drawshape(hex, RADIUS)[0])
 
@@ -161,7 +161,7 @@ def generatecurve(curve, x_shift, y_shift):
 
 #function that inputs coordinates of hexagon and outputs coordinates of third gecco iteration
 def drawshape3(hex):
-    iter2 = drawshape2(hexagon)
+    iter2 = drawshape2(hex)
 
     #weights represent weighted positions where centre iter2 of gecco curve meets other copies
     weights = [(2/21 + i/3, 3/21 + i/3) for i in range(3)]
@@ -171,6 +171,7 @@ def drawshape3(hex):
         globals()[word + 'x'] = centre_parts[word][xind]
         globals()[word + 'y'] = centre_parts[word][yind]
         globals()[word] = centre_parts[word]
+    RADIUS = distance(hex[0][0], hex[0][1], hex[1][0], hex[1][1])/2
 
     #weights represent weighted positions where iter1 connectives gecco curve meet
     iter1weights = [(0 + i/3, 1/9 + i/3) for i in range(3)] 
