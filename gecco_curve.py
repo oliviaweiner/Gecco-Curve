@@ -1,7 +1,9 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
+#global variables that will be used throughout code
 xind = 0
 yind = 1
 
@@ -203,26 +205,34 @@ def drawshape3(hex):
     y_curve = []
     for i, triple in enumerate(order_list):
             curve = generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT)
-            x_curve += curve[0]
-            y_curve += curve[1]
+            x_curve += curve[xind]
+            y_curve += curve[yind]
 
     return (x_curve, y_curve)
 
 
+if __name__ == "__main__":
+    argp = argparse.ArgumentParser()
+    argp.add_argument('iter_type', help="type of iter"
+        "Options: iter1, iter2, iter3.",
+        choices=["iter1", "iter2", "iter3"])
+    args = argp.parse_args()
 
-#creating coordinates of a hexagon with side length 1 centred at (0, 0)
-HEXLEN = 1
-(HEXCOORDX, HEXCOORDY) = (0, 0)
-hexagon = hexagonCoords(HEXLEN, HEXCOORDX, HEXCOORDY)
-RADIUS = distance(hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1])/2
-l = len(drawshape2(hexagon)[0])
+    #creating coordinates of a hexagon with side length 1 centred at (0, 0)
+    HEXLEN = 1
+    (HEXCOORDX, HEXCOORDY) = (0, 0)
+    hexagon = hexagonCoords(HEXLEN, HEXCOORDX, HEXCOORDY)
+    RADIUS = distance(hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1])/2
 
-#call drawshape on hexagon to create iter-1 gecco curve and plot x- and y-coordinates in matplotlib
-x = np.array(drawshape3(hexagon)[0])
-y = np.array(drawshape3(hexagon)[1]) 
-#x = np.concatenate((x[int(25*len(x)/9):], x[:int(2*len(x)/3)]))
-#y = np.concatenate((y[int(25*len(y)/9):], y[:int(2*len(y)/3)]))
-plt.style.use('seaborn-whitegrid')
-plt.plot(x, y, 'o', color='black')
-plt.show()
-
+    if args.iter_type == 'iter1':
+        x = np.array(drawshape(hexagon, RADIUS)[0])
+        y = np.array(drawshape(hexagon, RADIUS)[1])
+    if args.iter_type == 'iter2':
+        x = np.array(drawshape2(hexagon)[0])
+        y = np.array(drawshape2(hexagon)[1]) 
+    if args.iter_type == 'iter3':
+        x = np.array(drawshape3(hexagon)[0])
+        y = np.array(drawshape3(hexagon)[1]) 
+    plt.style.use('seaborn-whitegrid')
+    plt.plot(x, y, 'o', color='black')
+    plt.show()
