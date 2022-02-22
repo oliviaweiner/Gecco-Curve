@@ -97,5 +97,18 @@ class MyTest(unittest.TestCase):
                 self.assertAlmostEqual(prevgrad, grad)
             prevgrad = grad
 
+    #test none of iterations are empth lists
+    def test_nonempth(self):
+        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        output1 = gecco_curve.drawshape(testhex, 1)
+        output2 = gecco_curve.drawshape2(testhex)
+        output3 = gecco_curve.drawshape3(testhex)
+        outputs = [output1, output2, output3]
+        for output in outputs:
+            self.assertIsNotNone(output)
+            self.assertIsNot(output, ())
+            self.assertIsNot(output, ([], []))
+
+
 if __name__ == '__main__':
     unittest.main()
