@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 
-#global variables that will be used throughout code
-xind = 0
-yind = 1
+#index that x- and y- coordinates will be stored at
+XIND = 0
+YIND = 1
+#number of iterations in each half circle
+ITERCIRCLE = 500
 
 #function that inputs 2 sets of coordinates and outputs the distance between them
 def distance(x_1, y_1, x_2, y_2):
@@ -13,7 +15,7 @@ def distance(x_1, y_1, x_2, y_2):
 
 #function that inputs hexagon length and coordinates and outputs coordinates of a hexagon with 
 #side length equal to length, centred at input coordinates, starting at lower right going anti-clockwise
-def hexagonCoords(length, x, y):
+def hexagoncoords(length, x, y):
     hexagon = [(length/2, -(3)**(1/2)*length/2), (length,0), (length/2, (3)**(1/2)*length/2), \
               (-length/2, (3)**(1/2)*length/2), (-length, 0), (-length/2, -(3)**(1/2)*length/2)]
     hexagon = [(x + x_coord, y + y_coord) for (x_coord, y_coord) in hexagon]
@@ -24,9 +26,9 @@ def hexagonCoords(length, x, y):
 def circlecoordinates(x, y, r):
     xlist = []
     ylist = []
-    for i in range(500):
-        xlist.append(math.cos(2*math.pi*i/500)*r+x)
-        ylist.append(math.sin(2*math.pi*i/500)*r+y)
+    for i in range(ITERCIRCLE):
+        xlist.append(math.cos(2*math.pi*i/ITERCIRCLE)*r+x)
+        ylist.append(math.sin(2*math.pi*i/ITERCIRCLE)*r+y)
     return (xlist, ylist)
 
 #function inputs coordintes (x_1, y_1) and two lists of x- and y- coordinates, outputs list coordinates
@@ -56,24 +58,24 @@ def closestcoordinatesindexes(x_list1, y_list1, x_list2, y_list2):
     return (c1_min, c2_min)
 
 #function inputs hexagon coordinates and outputs list of hexagon gecco curve critical point coordinates
-def criticalcirclepoints(hex, r):
-    altered_hex = hex.copy()
-    altered_hex.append(hex[0])
-    list = []
+def criticalcirclepoints(hexagon, r):
+    altered_hex = hexagon.copy()
+    altered_hex.append(hexagon[0])
+    lst = []
     for i in range(len(altered_hex) - 1):
-        criticalpoint = closestcoordinatesindexes(circlecoordinates(altered_hex[i][0], altered_hex[i][1], r)[0], circlecoordinates(altered_hex[i][0], altered_hex[i][1], r)[1], circlecoordinates(altered_hex[i+1][0], altered_hex[i+1][1], r)[0], circlecoordinates(altered_hex[i+1][0], altered_hex[i+1][1], r)[1])
-        list.append(criticalpoint)
-    return list
+        criticalpoint = closestcoordinatesindexes(circlecoordinates(altered_hex[i][XIND], altered_hex[i][YIND], r)[XIND], circlecoordinates(altered_hex[i][XIND], altered_hex[i][YIND], r)[YIND], circlecoordinates(altered_hex[i+1][XIND], altered_hex[i+1][YIND], r)[XIND], circlecoordinates(altered_hex[i+1][XIND], altered_hex[i+1][YIND], r)[YIND])
+        lst.append(criticalpoint)
+    return lst
 
 #function inputs hexagon coordinates and outputs a list of lists of circle coordinates centred at each
 #hexagon coordinate
-def hexagoncirclelist(hex, r):
-    list = []
-    altered_hex = hex.copy()
-    altered_hex.append(hex[0])
+def hexagoncirclelist(hexagon, r):
+    lst = []
+    altered_hex = hexagon.copy()
+    altered_hex.append(hexagon[0])
     for i in range(len(altered_hex)):
-        list.append(circlecoordinates(altered_hex[i][0], altered_hex[i][1], r))
-    return list
+        lst.append(circlecoordinates(altered_hex[i][XIND], altered_hex[i][YIND], r))
+    return lst
 
 #function inputs coordinates of a circle and indexes of critical start and end point, and outputs coordinates 
 #of portion of circle starting and ending at index start and end point
@@ -102,33 +104,33 @@ def drawshape(hexagon, r):
     circlelist = hexagoncirclelist(hexagon, r)
     circlelist.append(circlelist[0])
     for i in range(len(criticals)-1):
-        critical_start = criticals[i][1]
-        critical_end = criticals[i+1][0]
-        circle_x = circlelist[i+1][0]
-        circle_y = circlelist[i+1][1]
+        critical_start = criticals[i][YIND]
+        critical_end = criticals[i+1][XIND]
+        circle_x = circlelist[i+1][XIND]
+        circle_y = circlelist[i+1][YIND]
         if (i % 2) == 0:
             circle_x.reverse()
             circle_y.reverse()
             critical_start = len(circle_x) - critical_start
             critical_end = len(circle_x) - critical_end
-        x_list += addpoints(circle_x, circle_y, critical_start, critical_end)[0]
-        y_list += addpoints(circle_x, circle_y, critical_start, critical_end)[1]
+        x_list += addpoints(circle_x, circle_y, critical_start, critical_end)[XIND]
+        y_list += addpoints(circle_x, circle_y, critical_start, critical_end)[YIND]
     return (x_list, y_list)
 
 #function that inputs coordinates of hexagon and outputs coordinates of second gecco iteration
-def drawshape2(hex):
-    RADIUS = distance(hex[0][0], hex[0][1], hex[1][0], hex[1][1])/2
-    iter1 = drawshape(hex, RADIUS)
-    LEN = len(drawshape(hex, RADIUS)[0])
+def drawshape2(hexagon):
+    radius = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
+    iter1 = drawshape(hexagon, radius)
+    n_coordinates = len(drawshape(hexagon, radius)[XIND])
 
-    horizontalx = iter1[0][int(LEN*2/3):] + iter1[0][:int(LEN*4/9)]
-    horizontaly = iter1[1][int(LEN*2/3):] + iter1[1][:int(LEN*4/9)]
-    upperx = iter1[0][int(LEN*1/3):] + iter1[0][:int(LEN*1/9)]
-    uppery = iter1[1][int(LEN*1/3):] + iter1[1][:int(LEN*1/9)]
-    lowerx = iter1[0][:int(LEN*7/9)]
-    lowery = iter1[1][:int(LEN*7/9)]
-    SHIFT = distance(hex[0][0], hex[0][1], hex[2][0], hex[2][1])
-    HSHIFT = hex[1][0] - hex[3][0]
+    horizontalx = iter1[XIND][int(n_coordinates*2/3):] + iter1[XIND][:int(n_coordinates*4/9)]
+    horizontaly = iter1[YIND][int(n_coordinates*2/3):] + iter1[YIND][:int(n_coordinates*4/9)]
+    upperx = iter1[XIND][int(n_coordinates*1/3):] + iter1[XIND][:int(n_coordinates*1/9)]
+    uppery = iter1[YIND][int(n_coordinates*1/3):] + iter1[YIND][:int(n_coordinates*1/9)]
+    lowerx = iter1[XIND][:int(n_coordinates*7/9)]
+    lowery = iter1[YIND][:int(n_coordinates*7/9)]
+    SHIFT = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[2][XIND], hexagon[2][YIND])
+    HSHIFT = hexagon[1][XIND] - hexagon[3][XIND]
 
     horizontalx = [x + HSHIFT for x in horizontalx]
     uppery = [y - SHIFT / 2 for y in uppery]
@@ -139,47 +141,47 @@ def drawshape2(hex):
 #function inputs weighted curve critical points, curves, and indicator, and outputs curve in indicator
 #n. of parts added up of curve, cut off at weight proportionate critical points of curve
 def curveportion(weights, curve, indicator):
-    curvelen = len(curve[0])
-    weight1 = weights[0]
-    weight2 = weights[1]
+    curvelen = len(curve[XIND])
+    weight1 = weights[XIND]
+    weight2 = weights[YIND]
     if indicator == 1:
-        x_curve = curve[xind][int(curvelen*weight1): int(curvelen*weight2)]
-        y_curve = curve[yind][int(curvelen*weight1): int(curvelen*weight2)]
+        x_curve = curve[XIND][int(curvelen*weight1): int(curvelen*weight2)]
+        y_curve = curve[YIND][int(curvelen*weight1): int(curvelen*weight2)]
     if indicator == 2:
-        x_curve = curve[xind][:int(curvelen*weight1)] + curve[xind][int(curvelen*weight2):]
-        y_curve = curve[yind][:int(curvelen*weight1)] + curve[yind][int(curvelen*weight2):]
+        x_curve = curve[XIND][:int(curvelen*weight1)] + curve[XIND][int(curvelen*weight2):]
+        y_curve = curve[YIND][:int(curvelen*weight1)] + curve[YIND][int(curvelen*weight2):]
     if indicator == -1:
-        x_curve = curve[xind][int(curvelen*weight1):] + curve[xind][:int(curvelen*weight2)]
-        y_curve = curve[yind][int(curvelen*weight1):] + curve[yind][:int(curvelen*weight2)]
+        x_curve = curve[XIND][int(curvelen*weight1):] + curve[XIND][:int(curvelen*weight2)]
+        y_curve = curve[YIND][int(curvelen*weight1):] + curve[YIND][:int(curvelen*weight2)]
     return (x_curve, y_curve)
 
 #inputs curve coordinates and amount it should be shifted in each direction and outputs shifted curve
 def generatecurve(curve, x_shift, y_shift):
-        newx = [x + x_shift for x in curve[xind]]
-        newy = [y + y_shift for y in curve[yind]]
+        newx = [x + x_shift for x in curve[XIND]]
+        newy = [y + y_shift for y in curve[YIND]]
         return (newx, newy)
 
 #function that inputs coordinates of hexagon and outputs coordinates of third gecco iteration
-def drawshape3(hex):
-    iter2 = drawshape2(hex)
+def drawshape3(hexagon):
+    iter2 = drawshape2(hexagon)
 
     #weights represent weighted positions where centre iter2 of gecco curve meets other copies
     weights = [(2/21 + i/3, 3/21 + i/3) for i in range(3)]
     centreshape = iter2
     centre_parts = {'upper': curveportion(weights[0], centreshape, 2), 'left': curveportion(weights[1], centreshape, 2), 'right': curveportion(weights[2], centreshape, 2)}
     for word in centre_parts:
-        globals()[word + 'x'] = centre_parts[word][xind]
-        globals()[word + 'y'] = centre_parts[word][yind]
+        globals()[word + 'x'] = centre_parts[word][XIND]
+        globals()[word + 'y'] = centre_parts[word][YIND]
         globals()[word] = centre_parts[word]
-    RADIUS = distance(hex[0][0], hex[0][1], hex[1][0], hex[1][1])/2
+    radius = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
 
     #weights represent weighted positions where iter1 connectives gecco curve meet
     iter1weights = [(0 + i/3, 1/9 + i/3) for i in range(3)] 
-    iter1 = drawshape(hex, RADIUS)
+    iter1 = drawshape(hexagon, radius)
     iter1_parts = {'right': curveportion(iter1weights[0], iter1, 1), 'left': curveportion(iter1weights[1], iter1, 1), 'bottom': curveportion(iter1weights[2], iter1, 1)}
     for word in iter1_parts:
-        globals()['iter1' + word + 'x'] = iter1_parts[word][xind]
-        globals()['iter1' + word + 'y'] = iter1_parts[word][yind]
+        globals()['iter1' + word + 'x'] = iter1_parts[word][XIND]
+        globals()['iter1' + word + 'y'] = iter1_parts[word][YIND]
         globals()['iter1' + word] = iter1_parts[word]
     
     #weights represent weighted positions where iter2 connectives gecco curve meet
@@ -187,13 +189,13 @@ def drawshape3(hex):
     iter2 = centreshape
     iter2_parts = {'left': curveportion(iter2weights[0], iter2, 1), 'bottom': curveportion(iter2weights[1], iter2, 1), 'right': curveportion(iter2weights[2], iter2, -1)}
     for word in iter2_parts:
-        globals()['iter2' + word + 'x'] = iter2_parts[word][xind]
-        globals()['iter2' + word + 'y'] = iter2_parts[word][yind]
+        globals()['iter2' + word + 'x'] = iter2_parts[word][XIND]
+        globals()['iter2' + word + 'y'] = iter2_parts[word][YIND]
         globals()['iter2' + word] = iter2_parts[word]
 
 
-    YSHIFT = hex[1][1] - hex[0][1]
-    XSHIFT = hex[2][0] - hex[4][0]
+    YSHIFT = hexagon[1][YIND] - hexagon[0][YIND]
+    XSHIFT = hexagon[2][XIND] - hexagon[4][XIND]
 
     #This list specifies the shift index and curve type that each step in our third iteration gecco
     #curve will be comprised of
@@ -206,8 +208,8 @@ def drawshape3(hex):
     y_curve = []
     for i, triple in enumerate(order_list):
             curve = generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT)
-            x_curve += curve[xind]
-            y_curve += curve[yind]
+            x_curve += curve[XIND]
+            y_curve += curve[YIND]
 
     return (x_curve, y_curve)
 
@@ -220,20 +222,20 @@ if __name__ == "__main__":
     args = argp.parse_args()
 
     #creating coordinates of a hexagon with side length 1 centred at (0, 0)
-    HEXLEN = 1
-    (HEXCOORDX, HEXCOORDY) = (0, 0)
-    hexagon = hexagonCoords(HEXLEN, HEXCOORDX, HEXCOORDY)
-    RADIUS = distance(hexagon[0][0], hexagon[0][1], hexagon[1][0], hexagon[1][1])/2
+    hexlen = 1
+    (hexcoordx, hexcoordy) = (0, 0)
+    hexagon = hexagoncoords(hexlen, hexcoordx, hexcoordy)
+    radius = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
 
     if args.iter_type == 'iter1':
-        x = np.array(drawshape(hexagon, RADIUS)[0])
-        y = np.array(drawshape(hexagon, RADIUS)[1])
+        x = np.array(drawshape(hexagon, radius)[XIND])
+        y = np.array(drawshape(hexagon, radius)[YIND])
     if args.iter_type == 'iter2':
-        x = np.array(drawshape2(hexagon)[0])
-        y = np.array(drawshape2(hexagon)[1]) 
+        x = np.array(drawshape2(hexagon)[XIND])
+        y = np.array(drawshape2(hexagon)[YIND]) 
     if args.iter_type == 'iter3':
-        x = np.array(drawshape3(hexagon)[0])
-        y = np.array(drawshape3(hexagon)[1]) 
+        x = np.array(drawshape3(hexagon)[XIND])
+        y = np.array(drawshape3(hexagon)[YIND]) 
     plt.style.use('seaborn-whitegrid')
     plt.plot(x, y, 'o', color='black')
     plt.show()

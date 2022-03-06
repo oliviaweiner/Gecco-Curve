@@ -1,6 +1,4 @@
 import unittest
-
-from click import get_current_context
 import gecco_curve
 import math
 
@@ -57,10 +55,10 @@ class MyTest(unittest.TestCase):
     def test_drawshape(self):
         testhex = gecco_curve.hexagonCoords(1, 1, 1)
         output = gecco_curve.drawshape(testhex, 1)
-        prevgrad = 'NONE'
+        prevgrad = None
         for i in range(len(output)-1):
             grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
-            if prevgrad != 'NONE':
+            if prevgrad != None:
                 self.assertAlmostEqual(prevgrad, grad)
             prevgrad = grad
     
@@ -68,10 +66,10 @@ class MyTest(unittest.TestCase):
     def test_drawshape2(self):
         testhex = gecco_curve.hexagonCoords(1, 1, 1)
         output = gecco_curve.drawshape2(testhex)
-        prevgrad = 'NONE'
+        prevgrad = None
         for i in range(len(output)-1):
             grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
-            if prevgrad != 'NONE':
+            if prevgrad is not None:
                 self.assertAlmostEqual(prevgrad, grad)
             prevgrad = grad
         
@@ -90,10 +88,10 @@ class MyTest(unittest.TestCase):
     def test_drawshape3(self):
         testhex = gecco_curve.hexagonCoords(1, 1, 1)
         output = gecco_curve.drawshape3(testhex)
-        prevgrad = 'NONE'
+        prevgrad = None
         for i in range(len(output)-1):
             grad = (output[1][i+1] - output[1][i])/(output[1][i+1] - output[1][i])
-            if prevgrad != 'NONE':
+            if prevgrad != None:
                 self.assertAlmostEqual(prevgrad, grad)
             prevgrad = grad
 
