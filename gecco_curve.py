@@ -16,7 +16,7 @@ def distance(x_1, y_1, x_2, y_2):
 #function that inputs hexagon length and coordinates and outputs coordinates of a hexagon with 
 #side length equal to length, centred at input coordinates, starting at lower right going anti-clockwise
 def hexagoncoords(length, x, y):
-    hexagon = [(length/2, -(3)**(1/2)*length/2), (length,0), (length/2, (3)**(1/2)*length/2), \
+    hexagon = [(length/2, -(3)**(1/2)*length/2), (length,0), (length/2, (3)**(1/2)*length/2), 
               (-length/2, (3)**(1/2)*length/2), (-length, 0), (-length/2, -(3)**(1/2)*length/2)]
     hexagon = [(x + x_coord, y + y_coord) for (x_coord, y_coord) in hexagon]
     return hexagon
@@ -199,9 +199,9 @@ def drawshape3(hexagon):
 
     #This list specifies the shift index and curve type that each step in our third iteration gecco
     #curve will be comprised of
-    order_list = [(iter2bottom, 0, 0), (iter1bottom, 2, -1), (upper, 2, -4), (iter1right, 2, -1), (left, 3, 1), \
-                (iter1left, 2, -1), (iter2right, 0, 0), (iter1right, 0, 3), (left, 1, 5), (iter1left, 0, 3), (right, -2, 4), \
-                (iter1bottom, 0, 3), (iter2left, 0, 0), (iter1left, -1, -2), (right, -3, -1), (iter1bottom, -1, -2), \
+    order_list = [(iter2bottom, 0, 0), (iter1bottom, 2, -1), (upper, 2, -4), (iter1right, 2, -1), (left, 3, 1), 
+                (iter1left, 2, -1), (iter2right, 0, 0), (iter1right, 0, 3), (left, 1, 5), (iter1left, 0, 3), (right, -2, 4), 
+                (iter1bottom, 0, 3), (iter2left, 0, 0), (iter1left, -1, -2), (right, -3, -1), (iter1bottom, -1, -2), 
                 (upper, -1, -5), (iter1right, -1, -2), (iter2bottom, 0, 0)]
 
     x_curve = []
