@@ -10,7 +10,7 @@ YIND = 1
 #number of iterations in each half circle
 ITERCIRCLE = 500
 
-#precomputed variables for the third iteration curve
+#precomputed variables for third iteration curve
 
 #weights represent weighted positions of where gecco curve parts meets other parts
 weights = { 'connectives': [(0 + i/3, 1/9 + i/3) for i in range(3)], 
