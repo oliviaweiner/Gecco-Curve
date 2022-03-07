@@ -6,8 +6,11 @@ import argparse
 #index that x- and y- coordinates will be stored at
 XIND = 0
 YIND = 1
+
 #number of iterations in each half circle
 ITERCIRCLE = 500
+
+#precomputed weights for third iteration
 
 #function that inputs 2 sets of coordinates and outputs the distance between them
 def distance(x_1, y_1, x_2, y_2):
@@ -170,8 +173,6 @@ def drawshape3(hexagon):
     centreshape = iter2
     centre_parts = {'upper': curveportion(weights[0], centreshape, 2), 'left': curveportion(weights[1], centreshape, 2), 'right': curveportion(weights[2], centreshape, 2)}
     for word in centre_parts:
-        globals()[word + 'x'] = centre_parts[word][XIND]
-        globals()[word + 'y'] = centre_parts[word][YIND]
         globals()[word] = centre_parts[word]
     radius = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
 
@@ -180,8 +181,6 @@ def drawshape3(hexagon):
     iter1 = drawshape(hexagon, radius)
     iter1_parts = {'right': curveportion(iter1weights[0], iter1, 1), 'left': curveportion(iter1weights[1], iter1, 1), 'bottom': curveportion(iter1weights[2], iter1, 1)}
     for word in iter1_parts:
-        globals()['iter1' + word + 'x'] = iter1_parts[word][XIND]
-        globals()['iter1' + word + 'y'] = iter1_parts[word][YIND]
         globals()['iter1' + word] = iter1_parts[word]
     
     #weights represent weighted positions where iter2 connectives gecco curve meet
@@ -189,13 +188,10 @@ def drawshape3(hexagon):
     iter2 = centreshape
     iter2_parts = {'left': curveportion(iter2weights[0], iter2, 1), 'bottom': curveportion(iter2weights[1], iter2, 1), 'right': curveportion(iter2weights[2], iter2, -1)}
     for word in iter2_parts:
-        globals()['iter2' + word + 'x'] = iter2_parts[word][XIND]
-        globals()['iter2' + word + 'y'] = iter2_parts[word][YIND]
         globals()['iter2' + word] = iter2_parts[word]
 
-
-    YSHIFT = hexagon[1][YIND] - hexagon[0][YIND]
-    XSHIFT = hexagon[2][XIND] - hexagon[4][XIND]
+    yshift = hexagon[1][YIND] - hexagon[0][YIND]
+    xshift = hexagon[2][XIND] - hexagon[4][XIND]
 
     #This list specifies the shift index and curve type that each step in our third iteration gecco
     #curve will be comprised of
@@ -207,7 +203,7 @@ def drawshape3(hexagon):
     x_curve = []
     y_curve = []
     for i, triple in enumerate(order_list):
-            curve = generatecurve(triple[0], triple[1] * XSHIFT, triple[2] * YSHIFT)
+            curve = generatecurve(triple[0], triple[1] * xshift, triple[2] * yshift)
             x_curve += curve[XIND]
             y_curve += curve[YIND]
 
