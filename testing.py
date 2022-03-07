@@ -13,17 +13,17 @@ class MyTest(unittest.TestCase):
     #test hexagonCoords function
     def test_hexagonCoords(self):
         self.assertEqual(len(gecco_curve.hexagonCoords(1, 2, 3)), 6)
-        self.assertEqual(gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[0][0], gecco_curve.hexagonCoords(1, 2, 3)[0][1], \
-            gecco_curve.hexagonCoords(1, 2, 3)[1][0], gecco_curve.hexagonCoords(1, 2, 3)[1][1]),  gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[4][0], \
+        self.assertEqual(gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[0][0], gecco_curve.hexagonCoords(1, 2, 3)[0][1],  
+            gecco_curve.hexagonCoords(1, 2, 3)[1][0], gecco_curve.hexagonCoords(1, 2, 3)[1][1]),  gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[4][0],  
             gecco_curve.hexagonCoords(1, 2, 3)[4][1], gecco_curve.hexagonCoords(1, 2, 3)[5][0], gecco_curve.hexagonCoords(1, 2, 3)[5][1]))
 
     #test circlecoordinates function
     def test_circlecoordinates(self):
-        self.assertAlmostEqual(gecco_curve.distance( \
-            gecco_curve.circlecoordinates(1, 1, 1)[0][250], \
-            gecco_curve.circlecoordinates(1, 1, 1)[1][250], \
-            gecco_curve.circlecoordinates(1, 1, 1)[0][0], \
-            gecco_curve.circlecoordinates(1, 1, 1)[1][0] \
+        self.assertAlmostEqual(gecco_curve.distance(  
+            gecco_curve.circlecoordinates(1, 1, 1)[0][250],  
+            gecco_curve.circlecoordinates(1, 1, 1)[1][250],  
+            gecco_curve.circlecoordinates(1, 1, 1)[0][0],  
+            gecco_curve.circlecoordinates(1, 1, 1)[1][0]  
             ), 2)
     
     #test closestcoordinateindex function

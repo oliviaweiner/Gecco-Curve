@@ -10,14 +10,30 @@ YIND = 1
 #number of iterations in each half circle
 ITERCIRCLE = 500
 
-#precomputed weights for third iteration
+#precomputed variables for the third iteration curve
+
+#weights represent weighted positions of where gecco curve parts meets other parts
+weights = { 'connectives': [(0 + i/3, 1/9 + i/3) for i in range(3)], 
+            'centre': [(2/21 + i/3, 3/21 + i/3) for i in range(3)], 
+            'edges': [(((3 + i * 7) % 21)/21, ((9 + i * 7) % 21)/21) for i in range(3)]}
+
+#precalculated ordering and instruction for the pieces that iter3 consists of in (weights, iter number, curveportion indicator) format
+order_list = [(weights['edges'][1], 2, 1), (weights['connectives'][2], 1, 1), (weights
+               ['centre'][0], 2, 2), (weights['connectives'][0], 1, 1), (weights['centre'][1], 2, 2), (weights['connectives'][1], 1, 1), (weights['edges'][2], 2, -1), (weights['connectives'][0], 1, 1), (weights['centre'][1], 2, 2), (weights['connectives'][1], 1, 1), (weights['centre'][2], 2, 2), (weights['connectives'][2], 1, 1), (weights['edges'][0], 2, 1), (weights[ 'connectives'][1], 1, 1), (weights['centre'][2], 2, 2), (weights['connectives'][2], 1, 1), (weights['centre'][0], 2, 2), (weights['connectives'][0], 1, 1), (weights[ 'edges'][1], 2, 1)]
+
+#precalculated amounts third iteration curve pieces should be shifted
+shift_list = [(0, 0), (2, -1), (2, -4), (2, -1), (3, 1), 
+                (2, -1), (0, 0), (0, 3), (1, 5), (0, 3), (-2, 4), 
+                (0, 3), (0, 0), (-1, -2), (-3, -1), (-1, -2), 
+                (-1, -5), (-1, -2), (0, 0)]
+
 
 #function that inputs 2 sets of coordinates and outputs the distance between them
 def distance(x_1, y_1, x_2, y_2):
     return ((x_1 - x_2)**2 + (y_1 - y_2)**2)**(1/2)
 
 #function that inputs hexagon length and coordinates and outputs coordinates of a hexagon with 
-#side length equal to length, centred at input coordinates, starting at lower right going anti-clockwise
+#side length equal to length,  'centre'd at input coordinates, starting at lower right going anti-clockwise
 def hexagoncoords(length, x, y):
     hexagon = [(length/2, -(3)**(1/2)*length/2), (length,0), (length/2, (3)**(1/2)*length/2), 
               (-length/2, (3)**(1/2)*length/2), (-length, 0), (-length/2, -(3)**(1/2)*length/2)]
@@ -70,7 +86,7 @@ def criticalcirclepoints(hexagon, r):
         lst.append(criticalpoint)
     return lst
 
-#function inputs hexagon coordinates and outputs a list of lists of circle coordinates centred at each
+#function inputs hexagon coordinates and outputs a list of lists of circle coordinates  'centre'd at each
 #hexagon coordinate
 def hexagoncirclelist(hexagon, r):
     lst = []
@@ -167,45 +183,23 @@ def generatecurve(curve, x_shift, y_shift):
 #function that inputs coordinates of hexagon and outputs coordinates of third gecco iteration
 def drawshape3(hexagon):
     iter2 = drawshape2(hexagon)
-
-    #weights represent weighted positions where centre iter2 of gecco curve meets other copies
-    weights = [(2/21 + i/3, 3/21 + i/3) for i in range(3)]
-    centreshape = iter2
-    centre_parts = {'upper': curveportion(weights[0], centreshape, 2), 'left': curveportion(weights[1], centreshape, 2), 'right': curveportion(weights[2], centreshape, 2)}
-    for word in centre_parts:
-        globals()[word] = centre_parts[word]
     radius = distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
-
-    #weights represent weighted positions where iter1 connectives gecco curve meet
-    iter1weights = [(0 + i/3, 1/9 + i/3) for i in range(3)] 
     iter1 = drawshape(hexagon, radius)
-    iter1_parts = {'right': curveportion(iter1weights[0], iter1, 1), 'left': curveportion(iter1weights[1], iter1, 1), 'bottom': curveportion(iter1weights[2], iter1, 1)}
-    for word in iter1_parts:
-        globals()['iter1' + word] = iter1_parts[word]
-    
-    #weights represent weighted positions where iter2 connectives gecco curve meet
-    iter2weights = [(((3 + i * 7) % 21)/21, ((9 + i * 7) % 21)/21) for i in range(3)]
-    iter2 = centreshape
-    iter2_parts = {'left': curveportion(iter2weights[0], iter2, 1), 'bottom': curveportion(iter2weights[1], iter2, 1), 'right': curveportion(iter2weights[2], iter2, -1)}
-    for word in iter2_parts:
-        globals()['iter2' + word] = iter2_parts[word]
 
     yshift = hexagon[1][YIND] - hexagon[0][YIND]
     xshift = hexagon[2][XIND] - hexagon[4][XIND]
 
-    #This list specifies the shift index and curve type that each step in our third iteration gecco
-    #curve will be comprised of
-    order_list = [(iter2bottom, 0, 0), (iter1bottom, 2, -1), (upper, 2, -4), (iter1right, 2, -1), (left, 3, 1), 
-                (iter1left, 2, -1), (iter2right, 0, 0), (iter1right, 0, 3), (left, 1, 5), (iter1left, 0, 3), (right, -2, 4), 
-                (iter1bottom, 0, 3), (iter2left, 0, 0), (iter1left, -1, -2), (right, -3, -1), (iter1bottom, -1, -2), 
-                (upper, -1, -5), (iter1right, -1, -2), (iter2bottom, 0, 0)]
-
     x_curve = []
     y_curve = []
-    for i, triple in enumerate(order_list):
-            curve = generatecurve(triple[0], triple[1] * xshift, triple[2] * yshift)
-            x_curve += curve[XIND]
-            y_curve += curve[YIND]
+    for i in range(len(order_list)):
+        if order_list[i][1] == 2:
+            shape = iter2
+        else:
+            shape = iter1
+        portion = curveportion(order_list[i][0], shape, order_list[i][2])
+        curve = generatecurve(portion, shift_list[i][0] * xshift, shift_list[i][1] * yshift)
+        x_curve += curve[XIND]
+        y_curve += curve[YIND]
 
     return (x_curve, y_curve)
 
@@ -217,7 +211,7 @@ if __name__ == "__main__":
         choices=["iter1", "iter2", "iter3"])
     args = argp.parse_args()
 
-    #creating coordinates of a hexagon with side length 1 centred at (0, 0)
+    #creating coordinates of a hexagon with side length 1  centred at (0, 0)
     hexlen = 1
     (hexcoordx, hexcoordy) = (0, 0)
     hexagon = hexagoncoords(hexlen, hexcoordx, hexcoordy)
