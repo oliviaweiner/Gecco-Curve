@@ -1,5 +1,6 @@
 import unittest
 import gecco_curve
+import addoutside
 import math
 
 class MyTest(unittest.TestCase):
@@ -10,12 +11,12 @@ class MyTest(unittest.TestCase):
         self.assertEqual(gecco_curve.distance(-6, -10, -2, -7), 5)
         self.assertEqual(gecco_curve.distance(-0.5, -3.75, 5.5, 4.25), 10)
     
-    #test hexagonCoords function
-    def test_hexagonCoords(self):
-        self.assertEqual(len(gecco_curve.hexagonCoords(1, 2, 3)), 6)
-        self.assertEqual(gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[0][0], gecco_curve.hexagonCoords(1, 2, 3)[0][1],  
-            gecco_curve.hexagonCoords(1, 2, 3)[1][0], gecco_curve.hexagonCoords(1, 2, 3)[1][1]),  gecco_curve.distance(gecco_curve.hexagonCoords(1, 2, 3)[4][0],  
-            gecco_curve.hexagonCoords(1, 2, 3)[4][1], gecco_curve.hexagonCoords(1, 2, 3)[5][0], gecco_curve.hexagonCoords(1, 2, 3)[5][1]))
+    #test hexagoncoords function
+    def test_hexagoncoords(self):
+        self.assertEqual(len(gecco_curve.hexagoncoords(1, 2, 3)), 6)
+        self.assertEqual(gecco_curve.distance(gecco_curve.hexagoncoords(1, 2, 3)[0][0], gecco_curve.hexagoncoords(1, 2, 3)[0][1],  
+            gecco_curve.hexagoncoords(1, 2, 3)[1][0], gecco_curve.hexagoncoords(1, 2, 3)[1][1]),  gecco_curve.distance(gecco_curve.hexagoncoords(1, 2, 3)[4][0],  
+            gecco_curve.hexagoncoords(1, 2, 3)[4][1], gecco_curve.hexagoncoords(1, 2, 3)[5][0], gecco_curve.hexagoncoords(1, 2, 3)[5][1]))
 
     #test circlecoordinates function
     def test_circlecoordinates(self):
@@ -36,12 +37,12 @@ class MyTest(unittest.TestCase):
 
     #test criticalcirclepoints function
     def test_criticalcirclepoints(self):
-        testhex = gecco_curve.hexagonCoords(1, 2, 3)
+        testhex = gecco_curve.hexagoncoords(1, 2, 3)
         self.assertEqual(gecco_curve.criticalcirclepoints(testhex, 1), [(0, 417), (83, 0), (334, 417), (417, 0), (0, 83), (83, 166)])
 
     #test hexagoncirclelist function
     def test_hexagoncirclelist(self):
-        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
         output = gecco_curve.hexagoncirclelist(testhex, 1)
         self.assertEqual(len(output), 7)
         self.assertEqual(abs(output[3][0][250] - output[3][0][0]), 2)
@@ -53,7 +54,7 @@ class MyTest(unittest.TestCase):
 
     #test drawshape function by checking that curve is smooth by assessing gradient
     def test_drawshape(self):
-        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
         output = gecco_curve.drawshape(testhex, 1)
         prevgrad = None
         for i in range(len(output)-1):
@@ -64,7 +65,7 @@ class MyTest(unittest.TestCase):
     
     #test drawshape2 function by checking that curve is smooth by assessing gradient
     def test_drawshape2(self):
-        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
         output = gecco_curve.drawshape2(testhex)
         prevgrad = None
         for i in range(len(output)-1):
@@ -86,7 +87,7 @@ class MyTest(unittest.TestCase):
     
     #test drawshape3 function
     def test_drawshape3(self):
-        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
         output = gecco_curve.drawshape3(testhex)
         prevgrad = None
         for i in range(len(output)-1):
@@ -97,7 +98,7 @@ class MyTest(unittest.TestCase):
 
     #test none of iterations are empth lists
     def test_nonempth(self):
-        testhex = gecco_curve.hexagonCoords(1, 1, 1)
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
         output1 = gecco_curve.drawshape(testhex, 1)
         output2 = gecco_curve.drawshape2(testhex)
         output3 = gecco_curve.drawshape3(testhex)
@@ -106,6 +107,19 @@ class MyTest(unittest.TestCase):
             self.assertIsNotNone(output)
             self.assertIsNot(output, ())
             self.assertIsNot(output, ([], []))
+
+    #test iter3 inside curve function
+    def test_drawshape3(self):
+        testhex = gecco_curve.hexagoncoords(1, 1, 1)
+        iter3 = gecco_curve.drawshape3(testhex)
+        innercoords = addoutside.produceouter(iter3, 1)
+        prevgrad = None
+        for i in range(len(innercoords)-1):
+            grad = (innercoords[1][i+1] - innercoords[1][i])/(innercoords[1][i+1] - innercoords[1][i])
+            if prevgrad != None:
+                self.assertAlmostEqual(prevgrad, grad)
+            prevgrad = grad
+
 
 
 if __name__ == '__main__':
