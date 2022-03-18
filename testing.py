@@ -117,7 +117,7 @@ class MyTest(unittest.TestCase):
         for i in range(len(innercoords)-1):
             grad = (innercoords[1][i+1] - innercoords[1][i])/(innercoords[1][i+1] - innercoords[1][i])
             if prevgrad != None:
-                self.assertAlmostEqual(prevgrad, grad)
+                self.assertAlmostEqual(prevgrad, 1000)
             prevgrad = grad
 
 
