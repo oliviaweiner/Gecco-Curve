@@ -110,7 +110,7 @@ class MyTest(unittest.TestCase):
 
     #test iter3 inside curve function
     def test_drawshape3_outer(self):
-        self.assertAlmostEqual(0, 1)
+        self.assertAlmostEqual(0, 2)
         testhex = gecco_curve.hexagoncoords(1, 1, 1)
         iter3 = gecco_curve.drawshape3(testhex)
         innercoords = add_outside.produceouter(iter3, 1)
