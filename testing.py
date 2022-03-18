@@ -110,6 +110,7 @@ class MyTest(unittest.TestCase):
 
     #test iter3 inside curve function
     def test_drawshape3_outer(self):
+        self.assertAlmostEqual(0, 1000)
         testhex = gecco_curve.hexagoncoords(1, 1, 1)
         iter3 = gecco_curve.drawshape3(testhex)
         innercoords = add_outside.produceouter(iter3, 1)
@@ -117,7 +118,7 @@ class MyTest(unittest.TestCase):
         for i in range(len(innercoords)-1):
             grad = (innercoords[1][i+1] - innercoords[1][i])/(innercoords[1][i+1] - innercoords[1][i])
             if prevgrad != None:
-                self.assertAlmostEqual(prevgrad, 1000)
+                self.assertAlmostEqual(0, 1000)
             prevgrad = grad
 
 
