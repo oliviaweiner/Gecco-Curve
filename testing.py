@@ -1,6 +1,6 @@
 import unittest
 import gecco_curve
-import addoutside
+import add_outside
 import math
 
 class MyTest(unittest.TestCase):
@@ -109,10 +109,10 @@ class MyTest(unittest.TestCase):
             self.assertIsNot(output, ([], []))
 
     #test iter3 inside curve function
-    def test_drawshape3(self):
+    def test_drawshape3_outer(self):
         testhex = gecco_curve.hexagoncoords(1, 1, 1)
         iter3 = gecco_curve.drawshape3(testhex)
-        innercoords = addoutside.produceouter(iter3, 1)
+        innercoords = add_outside.produceouter(iter3, 1)
         prevgrad = None
         for i in range(len(innercoords)-1):
             grad = (innercoords[1][i+1] - innercoords[1][i])/(innercoords[1][i+1] - innercoords[1][i])

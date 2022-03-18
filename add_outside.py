@@ -59,8 +59,6 @@ def produceouter(curve, d):
             if gecco_curve.distance(coord[0], coord[1], outercoordinatesx[length], outercoordinatesy[length]) < 100 * gecco_curve.distance(outercoordinatesx[length - 1], outercoordinatesy[length - 1], outercoordinatesx[length], outercoordinatesy[length]):
                 outercoordinatesx.append(coord[0])
                 outercoordinatesy.append(coord[1])
-            else:
-                print('case')
         else:
             outercoordinatesx.append(coord[0])
             outercoordinatesy.append(coord[1])
