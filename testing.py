@@ -121,7 +121,7 @@ class MyTest(unittest.TestCase):
                 self.assertAlmostEqual(prevgrad, grad)
             prevgrad = grad
 
-#trying again again again
+#trying again again
 
 if __name__ == '__main__':
     unittest.main()
