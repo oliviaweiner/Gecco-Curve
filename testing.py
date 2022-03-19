@@ -35,11 +35,6 @@ class MyTest(unittest.TestCase):
     def test_closestcoordinatesindexes(self):
         self.assertEqual(gecco_curve.closestcoordinatesindexes([0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [5, 5, 5, 5], [1, 1, 1, 1]), (3, 0))
 
-    #test criticalcirclepoints function
-    def test_criticalcirclepoints(self):
-        testhex = gecco_curve.hexagoncoords(1, 2, 3)
-        self.assertEqual(gecco_curve.criticalcirclepoints(testhex, 1), [(0, 417), (83, 0), (334, 417), (417, 0), (0, 83), (83, 166)])
-
     #test hexagoncirclelist function
     def test_hexagoncirclelist(self):
         testhex = gecco_curve.hexagoncoords(1, 1, 1)
