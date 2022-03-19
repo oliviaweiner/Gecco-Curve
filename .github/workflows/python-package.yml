@@ -6,10 +6,10 @@ name: Run Python Tests
 on:
   push:
     branches:
-      - revert_back
+      - master
   pull_request:
     branches:
-      - revert_back
+      - master
 
 jobs:
   build:
@@ -26,3 +26,4 @@ jobs:
           python -m pip install matplotlib
       - name: Run tests with pytest
         run: python -m unittest discover -s .
+
