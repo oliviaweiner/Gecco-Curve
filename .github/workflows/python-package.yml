@@ -5,7 +5,7 @@ name: Python package
 
 on:
   push:
-    branches: [ rever_back ]
+    branches: [ revert_back ]
   pull_request:
     branches: [ revert_back ]
 
