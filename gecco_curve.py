@@ -132,11 +132,16 @@ def drawshape(hexagon, r):
             circle_y.reverse()
             critical_start = len(circle_x) - critical_start
             critical_end = len(circle_x) - critical_end
+<<<<<<< HEAD
         x_add = addpoints(circle_x, circle_y, critical_start, critical_end)[XIND]
         y_add = addpoints(circle_x, circle_y, critical_start, critical_end)[YIND]
         x_list += x_add[1:len(x_add)-1]
         y_list += y_add[1:len(x_add)-1]
 
+=======
+        x_list += addpoints(circle_x, circle_y, critical_start, critical_end)[XIND]
+        y_list += addpoints(circle_x, circle_y, critical_start, critical_end)[YIND]
+>>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
     return (x_list, y_list)
 
 #function that inputs coordinates of hexagon and outputs coordinates of second gecco iteration
@@ -158,6 +163,7 @@ def drawshape2(hexagon):
     uppery = [y - SHIFT / 2 for y in uppery]
     lowery = [y + SHIFT / 2 for y in lowery]
 
+<<<<<<< HEAD
     upperx = upperx[1:len(uppery)]
     uppery = uppery[1:len(uppery)]
 
@@ -165,6 +171,9 @@ def drawshape2(hexagon):
     returny = lowery + uppery + horizontaly
 
     return (returnx, returny)
+=======
+    return (lowerx + upperx + horizontalx, lowery + uppery + horizontaly)
+>>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
 
 #function inputs weighted curve critical points, curves, and indicator, and outputs curve in indicator
 #n. of parts added up of curve, cut off at weight proportionate critical points of curve
@@ -173,11 +182,19 @@ def curveportion(weights, curve, indicator):
     weight1 = weights[XIND]
     weight2 = weights[YIND]
     if indicator == 1:
+<<<<<<< HEAD
         x_curve = curve[XIND][int(curvelen*weight1): int(curvelen*weight2)-2]
         y_curve = curve[YIND][int(curvelen*weight1): int(curvelen*weight2)-2]
     if indicator == 2:
         x_curve = curve[XIND][int(curvelen*weight2):] + curve[XIND][:int(curvelen*weight1)-2]
         y_curve = curve[YIND][int(curvelen*weight2):] + curve[YIND][:int(curvelen*weight1)-2] 
+=======
+        x_curve = curve[XIND][int(curvelen*weight1): int(curvelen*weight2)]
+        y_curve = curve[YIND][int(curvelen*weight1): int(curvelen*weight2)]
+    if indicator == 2:
+        x_curve = curve[XIND][:int(curvelen*weight1)] + curve[XIND][int(curvelen*weight2):]
+        y_curve = curve[YIND][:int(curvelen*weight1)] + curve[YIND][int(curvelen*weight2):]
+>>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
     if indicator == -1:
         x_curve = curve[XIND][int(curvelen*weight1):] + curve[XIND][:int(curvelen*weight2)]
         y_curve = curve[YIND][int(curvelen*weight1):] + curve[YIND][:int(curvelen*weight2)]
@@ -207,11 +224,16 @@ def drawshape3(hexagon):
             shape = iter1
         portion = curveportion(order_list[i][0], shape, order_list[i][2])
         curve = generatecurve(portion, shift_list[i][0] * xshift, shift_list[i][1] * yshift)
+<<<<<<< HEAD
         
         x_add = curve[XIND]
         y_add = curve[YIND]
         x_curve += x_add
         y_curve += y_add
+=======
+        x_curve += curve[XIND]
+        y_curve += curve[YIND]
+>>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
 
     return (x_curve, y_curve)
 
