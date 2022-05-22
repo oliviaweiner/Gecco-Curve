@@ -77,13 +77,9 @@ if __name__ == "__main__":
     (hexcoordx, hexcoordy) = (0, 0)
     hexagon = gecco_curve.hexagoncoords(hexlen, hexcoordx, hexcoordy)
     radius = gecco_curve.distance(hexagon[0][XIND], hexagon[0][YIND], hexagon[1][XIND], hexagon[1][YIND])/2
-<<<<<<< HEAD
     d = 0
     #max outside curve is d=0.147
     #max inside curve is d=-0.198
-=======
-    d = 0.05
->>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
 
     if args.iter_type == 'iter1':
         curve = gecco_curve.drawshape(hexagon, radius)
@@ -99,10 +95,6 @@ if __name__ == "__main__":
         y = np.array(innercurve[YIND])
     if args.iter_type == 'iter3':
         curve = gecco_curve.drawshape3(hexagon)
-<<<<<<< HEAD
-=======
-        innercurve = produceinner(curve, d)
->>>>>>> eb96dfa6e7c52bdad839f2ea4d5bcba5385efd63
         outercurve = produceouter(curve, d)
         x = np.array(outercurve[XIND])
         y = np.array(outercurve[YIND])
