@@ -216,6 +216,42 @@ def drawshape3(hexagon):
     return (x_curve, y_curve)
 
 
+#function built by Cole Robins
+def uniform (x):
+    out_val = format(x, '.2f')
+    return out_val
+
+
+#format coord files, built by Cole Robins
+def format (name, path_name, z_val):
+    #import csv
+    csv = pd.read_csv(path_name, header=None, index_col=False)
+    #fill z-values as given
+    csv[2] = z_val
+    #apply alterations
+    df = csv.applymap(uniform)
+    #check dupes
+    dupes_list = df.duplicated(keep='first')
+    out_file = df[~dupes_list]
+    #Dropping information case
+    out_file = out_file[::2]
+    #define and append first row for closed curve
+    start_point = []
+    for i in range(3):
+      start_point.append(out_file[i][0])
+    out_file.loc[len(out_file.index)] = start_point
+    #export csv
+    out_file.to_csv(name + "_formatted.csv", header=False, index=False)
+    return
+    
+
+# Final input is given z-value, Cole Robins portion
+datafile_path = "outer_curve.csv"
+format("outer_curve", datafile_path, 1440.0)
+datafile_path = "inner_curve.csv"
+format("inner_curve", datafile_path, 0.0)
+
+
 if __name__ == "__main__":
     argp = argparse.ArgumentParser()
     argp.add_argument('iter_type', help="type of iter"
